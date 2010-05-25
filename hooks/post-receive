@@ -35,17 +35,17 @@ project=$(pwd | awk -F"/" '{print $NF}')
 commit=$(git log -1 --format=format:"%h" $refname)
 author=$(git log -1 --format=format:"%cn" $refname)
 
-changes=$(git log -1 --shortstat $refname | grep "files changed" | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
+changes="$(git log -1 --shortstat $refname | grep 'files changed' | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')"
 
-message=$(git log -1 --format=format:"%s" $refname)
+message="$(git log -1 --format=format:"%s" $refname)"
 
 url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
 
-if [ -z "$(message)" ]; then
+if [ -z "$message" ]; then
   message="No message supplied for commit."
   exit 0
 fi
-if [ -z "$(changes)" ]; then
+if [ -z "$changes" ]; then
   changes="No obvious changes made."
 fi
 
