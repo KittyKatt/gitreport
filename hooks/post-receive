@@ -17,8 +17,8 @@ cd $repopath
 # Set this to the URL of your gitweb repository's main page
 yoururl="http://git.example.com/"
 
-# Set this to the port you set in Supybot's Listener plugin.
-$tehport="56789"
+# Set the port in sock.connect() at the bottom to the port you set in Supybot's Listener plugin.
+
 
 #
 # Bro, don't touch these lines following this one.
@@ -53,7 +53,7 @@ python - <<END
 import socket, commands
 
 sock = socket.socket()
-sock.connect(('localhost', $tehport))
+sock.connect(('localhost', 31691))
 sock.send(commands.getoutput('echo -e "\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02r${commit}\x0f / (${changes}): \x02\"${message}\"\x02 - ${url}"'))
 sock.close()
 END
