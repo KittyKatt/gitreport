@@ -41,11 +41,11 @@ message=$(git log -1 --format=format:"%s" $refname)
 
 url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
 
-if [ -z "$message" ]; then
+if [ -z "$(message)" ]; then
   message="No message supplied for commit."
   exit 0
 fi
-if [ -z "$changes" ]; then
+if [ -z "$(changes)" ]; then
   changes="No obvious changes made."
 fi
 
