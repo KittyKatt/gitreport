@@ -18,7 +18,7 @@ cd $repopath
 yoururl="http://git.example.com/"
 
 # Set this to the port you set in Supybot's Listener plugin.
-$tehport=56789
+$tehport="56789"
 
 #
 # Bro, don't touch these lines following this one.
