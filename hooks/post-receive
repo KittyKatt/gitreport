@@ -9,10 +9,10 @@
 # For example:
 #  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
 
-cd ../
+cd /full/path/to/repository/
 
 # Set this to the URL of your gitweb repository
-yoururl="http://git.example.org"
+yoururl="http://git.example.com"
 
 merged=$(git rev-parse HEAD)
 refname=$(cat ./hooks/refname.txt 2>/dev/null)
@@ -21,13 +21,13 @@ gitver=$(git --version)
 gitver=${gitver##* }
 rev=$(git describe ${merged} 2>/dev/null)
 
-lastlog=$(git log --color -1 --stat --decorate $refname > ./hooks/lastlog)
+# lastlog=$(git log --color -1 --stat --decorate $refname > ./hooks/lastlog)
 
 project=$(pwd | awk -F"/" '{print $NF}')
-commit=$(awk '/commit/ {print $2}' ./hooks/lastlog)
-author=$(awk '/Author: /{print $2" "$3}' ./hooks/lastlog)
-changes=$(grep "files changed" ./hooks/lastlog | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
-message=$(sed -n '5p' ./hooks/lastlog | sed -e 's/^ *//')
+commit=$(git log -1 --format=format:"%h" $refname)
+author=$(git log -1 --format=format:"%h" $refname)
+changes=$(git log -1 --shortstat | grep "files changed" | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
+message=$(git log -1 --format=format:"%s" $refname)
 url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
 
 if [ -z $message ]; then message="No message supplied for commit."; fi

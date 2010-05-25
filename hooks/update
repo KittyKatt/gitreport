@@ -26,4 +26,4 @@
 
 # --- Command line
 refname="$1"
-echo $refname > /srv/repos/repositories/testing.git/hooks/refname.txt
+echo $refname > /full/path/to/repository/hooks/refname.txt
