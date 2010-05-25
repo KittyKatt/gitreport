@@ -11,7 +11,7 @@
 #
 
 # Change repopath to the path to your gitosis repository
-repopath=/full/path/to/repository/
+repopath="/full/path/to/repository/"
 cd $repopath
 
 # Set this to the URL of your gitweb repository's main page
