@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# An example hook script for the "post-receive" event.
+#
+# The "post-receive" script is run after receive-pack has accepted a pack
+# and the repository has been updated.  It is passed arguments in through
+# stdin in the form
+#  <oldrev> <newrev> <refname>
+# For example:
+#  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
+
+cd ../
+
+# Set this to the URL of your gitweb repository
+yoururl="http://git.example.org"
+
+merged=$(git rev-parse HEAD)
+refname=$(cat ./hooks/refname.txt 2>/dev/null)
+refname=${refname##refs/heads/}
+gitver=$(git --version)
+gitver=${gitver##* }
+rev=$(git describe ${merged} 2>/dev/null)
+
+lastlog=$(git log --color -1 --stat --decorate $refname > ./hooks/lastlog)
+
+project=$(pwd | awk -F"/" '{print $NF}')
+commit=$(awk '/commit/ {print $2}' ./hooks/lastlog)
+author=$(awk '/Author: /{print $2" "$3}' ./hooks/lastlog)
+changes=$(grep "files changed" ./hooks/lastlog | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
+message=$(sed -n '5p' ./hooks/lastlog | sed -e 's/^ *//')
+url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
+
+if [ -z $message ]; then message="No message supplied for commit."; fi
+if [ -z $changes ]; then changes="No obvious changes made."; fi
+
+# You need to set the output, if different from default is desired, and the port number below.
+python - <<END
+import socket, commands
+
+sock = socket.socket()
+sock.connect(('localhost', 56789))
+sock.send(commands.getoutput('echo -e "\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02r${commit:0:7}\x0f / (${changes}): \x02\"${message}\"\x02 - ${url}"'))
+sock.close()
+END
