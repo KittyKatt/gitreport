@@ -39,7 +39,7 @@ changes=$(git log -1 --shortstat $refname | grep "files changed" | sed -e 's/fil
 
 message=$(git log -1 --format=format:"%s" $refname)
 
-url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
+url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
 
 if [ -z "$message" ]; then
   message="No message supplied for commit."
