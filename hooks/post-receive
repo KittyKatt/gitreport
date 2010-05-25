@@ -1,6 +1,6 @@
 #!/bin/sh
-#
-# An example hook script for the "post-receive" event.
+# 
+# A git SupyBot post-receive hook written by KittyKatt.
 #
 # The "post-receive" script is run after receive-pack has accepted a pack
 # and the repository has been updated.  It is passed arguments in through
@@ -10,10 +10,19 @@
 #  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
 #
 
-cd /full/path/to/repository/
+# Change repopath to the path to your gitosis repository
+repopath=/full/path/to/repository/
+cd $repopath
 
-# Set this to the URL of your gitweb repository
-yoururl="http://git.example.com"
+# Set this to the URL of your gitweb repository's main page
+yoururl="http://git.example.com/"
+
+# Set this to the port you set in Supybot's Listener plugin.
+$tehport=56789
+
+#
+# Bro, don't touch these lines following this one.
+#
 
 merged=$(git rev-parse HEAD)
 refname=$(cat ./hooks/refname.txt 2>/dev/null)
@@ -22,14 +31,15 @@ gitver=$(git --version)
 gitver=${gitver##* }
 rev=$(git describe ${merged} 2>/dev/null)
 
-# lastlog=$(git log --color -1 --stat --decorate $refname > ./hooks/lastlog)
-
 project=$(pwd | awk -F"/" '{print $NF}')
 commit=$(git log -1 --format=format:"%h" $refname)
 author=$(git log -1 --format=format:"%cn" $refname)
+
 changes=$(git log -1 --shortstat $refname | grep "files changed" | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
+
 message=$(git log -1 --format=format:"%s" $refname)
-url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
+
+url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
 
 if [ -z "$message" ]; then
   message="No message supplied for commit."
@@ -43,7 +53,8 @@ python - <<END
 import socket, commands
 
 sock = socket.socket()
-sock.connect(('localhost', 56789))
+sock.connect(('localhost', $tehport))
 sock.send(commands.getoutput('echo -e "\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02r${commit}\x0f / (${changes}): \x02\"${message}\"\x02 - ${url}"'))
 sock.close()
 END
+
