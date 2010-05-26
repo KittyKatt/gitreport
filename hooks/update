@@ -25,10 +25,10 @@
 #
 
 # Change project to the name of your project as in <project>.git
-project="yourproject"
+project="expbot"
 
 # Path to repositories folder (DO NOT USE A FOLLOWING SLASH)
-repopath="/full/path/to/repositories"
+repopath="/srv/git/repositories"
 
 # --- Command line
 cachefile="refname.txt"

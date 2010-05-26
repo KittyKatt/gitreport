@@ -11,13 +11,13 @@
 #
 
 # Change project to the name of your project as in <project>.git
-project="yourproject"
+project="expbot"
 
 # Change repopath to the path to your gitosis repository
-repopath="/full/path/to/repositories"
+repopath="/srv/git/repositories"
 
 # Set this to the URL of your gitweb repository's main page
-yoururl="http://git.example.com/"
+yoururl="http://git.exdevelopment.net/"
 
 # Set the port in sock.connect() at the bottom to the port you set in Supybot's Listener plugin.
 
@@ -35,20 +35,20 @@ gitver=$(git --version)
 gitver=${gitver##* }
 rev=$(git describe ${merged} 2>/dev/null)
 
-project=$(pwd | awk -F"/" '{print $NF}')
-commit=$(git log -1 --format=format:"%h" $refname)
-author=$(git log -1 --format=format:"%cn" $refname)
+commit=$(git log -1 --format=format:%h $refname)
+author=$(git log -1 --format=format:%cn $refname)
 
-changes=$(git log -1 --shortstat $refname | grep "files changed" | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
+changes=$(git log -1 --shortstat $refname | grep 'files changed' | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
 
-message=$(git log -1 --format=format:"%s" $refname)
+message=$(git log -1 --format=format:%s $refname)
 
-url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
+url=$(curl -s http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit} | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
 
 if [ -z "$message" ]; then
   message="No message supplied for commit."
   exit 0
 fi
+
 if [ -z "$changes" ]; then
   changes="No obvious changes made."
 fi
@@ -58,8 +58,8 @@ python - <<END
 import socket, commands
 
 sock = socket.socket()
-sock.connect(('localhost', 31691))
-sock.send(commands.getoutput('echo -e "\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02r${commit}\x0f / (${changes}): \x02\"${message}\"\x02 - ${url}"'))
+sock.connect("localhost", 31691)
+sock.send(commands.getoutput("echo -e \"\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02r${commit}\x0f / (${changes}): \x02\"\"${message}\"\"\x02 - ${url}\""))
 sock.close()
 END
 
