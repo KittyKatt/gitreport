@@ -53,13 +53,17 @@ if [ -z "$changes" ]; then
   changes="No obvious changes made."
 fi
 
+message=$(echo -e "\x02${project}\x02 \x037${refname} \x033${author}\x0f * \x02r${commit}\x0f / [${changes}]: \x02\"${message}\"\x02 - ${url}")
+
+export COMMITMSG=$message
+
 # You need to set the output, if different from default is desired, and the port number below.
 python - <<END
 import socket, commands
 
 sock = socket.socket()
 sock.connect("localhost", 31691)
-sock.send(commands.getoutput("echo -e \"\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02r${commit}\x0f / (${changes}): \x02\"\"${message}\"\"\x02 - ${url}\""))
+sock.send(commands.getoutput('echo $COMMITMSG'))
 sock.close()
 END
 
