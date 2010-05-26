@@ -24,6 +24,14 @@
 #   in the repository.  By default this is allowed.
 #
 
+# Change project to the name of your project as in <project>.git
+project="yourproject"
+
+# Path to repositories folder (DO NOT USE A FOLLOWING SLASH)
+repopath="/full/path/to/repositories"
+
 # --- Command line
+cachefile="refname.txt"
+
 refname="$1"
-echo $refname > /full/path/to/repository/hooks/refname.txt
+echo $refname > $repopath/$project.git/hooks/$cachefile

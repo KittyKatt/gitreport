@@ -10,9 +10,11 @@
 #  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
 #
 
+# Change project to the name of your project as in <project>.git
+project="yourproject"
+
 # Change repopath to the path to your gitosis repository
-repopath="/full/path/to/repository/"
-cd $repopath
+repopath="/full/path/to/repositories"
 
 # Set this to the URL of your gitweb repository's main page
 yoururl="http://git.example.com/"
@@ -23,6 +25,8 @@ yoururl="http://git.example.com/"
 #
 # Bro, don't touch these lines following this one.
 #
+
+cd $repopath/$project.git
 
 merged=$(git rev-parse HEAD)
 refname=$(cat ./hooks/refname.txt 2>/dev/null)
@@ -35,9 +39,9 @@ project=$(pwd | awk -F"/" '{print $NF}')
 commit=$(git log -1 --format=format:"%h" $refname)
 author=$(git log -1 --format=format:"%cn" $refname)
 
-changes="$(git log -1 --shortstat $refname | grep 'files changed' | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')"
+changes=$(git log -1 --shortstat $refname | grep "files changed" | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
 
-message="$(git log -1 --format=format:'%s' $refname)"
+message=$(git log -1 --format=format:"%s" $refname)
 
 url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
 
