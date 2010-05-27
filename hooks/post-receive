@@ -48,8 +48,6 @@ url=$(curl -s "http://tinyurl.com/create.php?url=${yoururl}?p=${project};a=commi
 if [ -z "$message" ]; then
   message="No message supplied for commit."
   exit 0
-else
-  message="\"$message\""
 fi
 if [ -z "$changes" ]; then
   changes="No obvious changes made."
