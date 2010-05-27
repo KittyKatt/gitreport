@@ -25,7 +25,7 @@
 #
 
 # Change project to the name of your project as in <project>.git
-project="justhook"
+project="projectname"
 
 # Path to repositories folder (DO NOT USE A FOLLOWING SLASH)
 repopath="/srv/git/repositories"
