@@ -2,6 +2,8 @@
 # 
 # A git SupyBot post-receive hook written by KittyKatt.
 #
+# Content copyright KittyKatt (Brett Bohnenkamper: kittykatt@archlinux.us)
+#
 # The "post-receive" script is run after receive-pack has accepted a pack
 # and the repository has been updated.  It is passed arguments in through
 # stdin in the form
