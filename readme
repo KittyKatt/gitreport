@@ -13,3 +13,6 @@ Open the other two files to see that the other edits in those should be self-exp
 Make the post-receive and comparse.sh files executable. And that should be it!
 
 Try pushing to your repository now. ;)
+
+
+Copyright KittyKatt 2010
