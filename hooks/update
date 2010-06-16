@@ -1,5 +1,9 @@
 #!/bin/sh
 #
+# Part of the gitreport Supybot plugin system written by KittyKatt.
+#
+# Content copyright KittyKatt (Brett Bohnenkamper: kittykatt@archlinux.us)
+#
 # An example hook script to blocks unannotated tags from entering.
 # Called by "git receive-pack" with arguments: refname sha1-old sha1-new
 #
@@ -25,7 +29,7 @@
 #
 
 # Change project to the name of your project as in <project>.git
-project="expbot"
+project="projectname"
 
 # Path to repositories folder (DO NOT USE A FOLLOWING SLASH)
 repopath="/srv/git/repositories"
