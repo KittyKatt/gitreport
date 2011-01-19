@@ -55,13 +55,13 @@ if [ -z "$changes" ]; then
   changes="No obvious changes made."
 fi
 
-# You need to set the output, if different from default is desired, and the port number below.
-python - <<END
-import socket, commands
+function snd2irc() {
+        # $1 command
+        exec 5<> $_mytcp 2>/dev/null
+        [[ $? -gt 0 ]] && return 1
+        printf "$1" >&5
+        exec 5>&-
+        return 0
+}
 
-sock = socket.socket()
-sock.connect(('localhost', 31691))
-sock.send(commands.getoutput('echo -e "\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02${commit}\x0f / (${changes}): \x02${message}\x02 - ${url}"'))
-sock.close()
-END
-
+snd2irc "`echo -e "\x02${project}:\x02 \x037${refname} \x033${author}\x0f * \x02${commit}\x0f / (${changes}): \x02${message}\x02 - ${url}"`"
