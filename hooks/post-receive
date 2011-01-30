@@ -21,7 +21,10 @@ repopath="/srv/git/repositories"
 # Set this to the URL of your gitweb repository's main page
 yoururl="http://git.example.com/"
 
-# Set the port in sock.connect() at the bottom to the port you set in Supybot's Listener plugin.
+# Set the host and port number that SupyBot's Listener plugin is listening on
+_host="localhost"
+_port="8082"
+_mytcp="/dev/tcp/$_host/$_port"
 
 
 #
@@ -45,7 +48,10 @@ changes=$(git log -1 --shortstat $refname | grep "files changed" | sed -e 's/fil
 
 message=$(git log -1 --format=format:"%s" $refname)
 
-url=$(curl -s "http://scurl.tk/api.php?format=simple&action=shorturl&url=${yoururl}?p=${project}.git;a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo "")
+
+# Short URL's at sCURL.tk - These have a spam timer on them so keep at least 10 seconds between submissions. gitweb version 
+# cgit version
+url=$(curl -sL "http://scurl.tk/api.php?format=simple&action=shorturl&url=${yoururl}?p=${project}.git;a=commit;h=${commit}" \ | sed -n 's/.*\(http:\/\/tinyurl.com\/[a-z0-9][a-z0-9]*\).*/\1/p' | uniq; echo -n "")
 
 if [ -z "$message" ]; then
   message="No message supplied for commit."
