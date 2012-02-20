@@ -36,6 +36,7 @@ cd $repopath/$project.git
 merged=$(git rev-parse HEAD)
 refname=$(cat ./hooks/refname.txt 2>/dev/null)
 refname=${refname##refs/heads/}
+[[ "$refname" =~ "refs/tags" ]] && refname=$(echo "$refname" | sed 's/refs\/tags\///')
 gitver=$(git --version)
 gitver=${gitver##* }
 rev=$(git describe ${merged} 2>/dev/null)
