@@ -45,5 +45,18 @@ Listener = conf.registerPlugin('Listener')
 # conf.registerGlobalValue(Listener, 'someConfigVariableName',
 #     registry.Boolean(False, """Help for someConfigVariableName."""))
 
+conf.registerGlobalValue(Listener, 'server_address',
+    registry.String('localhost',
+                    """IRC server address to connect to."""))
+conf.registerGlobalValue(Listener, 'server_network',    
+    registry.String('SilverIRC',
+                    """IRC server network name to connect to."""))
+conf.registerGlobalValue(Listener, 'server_channel',
+    registry.String('#sircgit',
+                    """IRC channel to report commits to."""))
+
+conf.registerGlobalValue(Listener, 'listen_port',
+    registry.PositiveInteger(31691,
+                    """Port for the IRC notification server to listen on"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

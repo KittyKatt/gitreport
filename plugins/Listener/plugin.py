@@ -49,10 +49,10 @@ class Listener(callbacks.Plugin):
         self.__parent = super(Listener, self)
         self.__parent.__init__(irc)
         self.buffer = ''
-        self.channel = '#supybot-bots'  # set this
-        self.network = 'freenode' # ...and this
-        self.host = 'localhost'  # ...and this
-        self.port = 31691  # ...and this.
+        self.network = self.registryValue('server_network')
+        self.host = self.registryValue('server_address')
+	self.channel = self.registryValue('server_channel')
+	self.port = self.registryValue('listen_port')
         self.listenerThread = self.ListeningThread(self.network, self.channel, self.host, self.port)
         self.listenerThread.start()
 
