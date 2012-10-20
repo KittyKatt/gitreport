@@ -36,7 +36,7 @@ cd $repopath/$project.git
 merged=$(git rev-parse HEAD)
 refname=$(cat ./hooks/refname.txt 2>/dev/null)
 refname=${refname##refs/heads/}
-[[ "$refname" =~ "refs/tags" ]] && refname=$(echo "$refname" | sed 's/refs\/tags\///')
+[[ "$refname" =~ "refs/tags" ]] && refname=$(echo "$refname" | sed 's/refs\/tags\///'); reftag="yes"
 gitver=$(git --version)
 gitver=${gitver##* }
 rev=$(git describe ${merged} 2>/dev/null)
@@ -48,6 +48,7 @@ author=$(git log -1 --format=format:"%cn" $refname)
 changes=$(git log -1 --shortstat $refname | grep "files changed" | sed -e 's/files changed/file(s) changed/' -e 's/insertions(+)/(+)/' -e 's/deletions(-)/(-)/' -e 's/^ //')
 
 message=$(git log -1 --format=format:"%s" $refname)
+[[ "$reftag" ]] && message=$(git show "$refname" | sed -n '5p')
 
 
 # Short URL's at sCURL.tk - These have a spam timer on them so keep at least 10 seconds between submissions. gitweb version 
